@@ -60,8 +60,7 @@ const mapping = {
       let code = morseArray[i];
       if (code === "") {
         text += " ";
-      } else if (code === "/") {
-        text += " / ";
+      
       } else if (Object.values(mapping).includes(code)) {
         let char = Object.keys(mapping).find(key => mapping[key] === code);
         text += char;
