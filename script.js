@@ -91,7 +91,6 @@ function morseToText(morse) {
 
 
     function copyText() {
-      saveText();
       const output = document.getElementById('output');
       output.select();
       output.setSelectionRange(0, 99999); /* For mobile devices */
