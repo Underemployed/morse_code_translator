@@ -82,10 +82,7 @@ function convertToText() {
 
 
 function textToMorse(text) {
-  
-  let morse = "";
-  let isValidMorse = /^[.\-/ ]+$/.test(text);
-  if(!isValidMorse){
+  let morse=""
 
   for (let i = 0; i < text.length; i++) {
     
@@ -97,10 +94,7 @@ function textToMorse(text) {
     } else if (char === " ") {
       morse += " / ";
     }
-  }}else{
-    morse=morseToText(text);
   }
-
   return morse.trim();
 }
 
