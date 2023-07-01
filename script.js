@@ -14,7 +14,27 @@ const mapping = {
   "'": ".----.", "!": "-.-.--", "/": "-..-.",
   "(": "-.--.", ")": "-.--.-", "&": ".-...",
   ":": "---...", ";": "-.-.-.", "=": "-...-",
-  "+": ".-.-.", "-": "-....-", "_": "..--.-",
+  "+": ".-.-.", "-": "-", "_": "..--.-",
+  "\"": ".-..-.", "$": "...-..-", "@": ".--.-.",
+  " ": "/"
+};
+const check = {
+  "A": ".-", "B": "-...", "C": "-.-.", "D": "-..",
+  "E": ".", "F": "..-.", "G": "--.", "H": "....",
+  "I": "..", "J": ".---", "K": "-.-", "L": ".-..",
+  "M": "--", "N": "-.", "O": "---", "P": ".--.",
+  "Q": "--.-", "R": ".-.", "S": "...", "T": "-",
+  "U": "..-", "V": "...-", "W": ".--", "X": "-..-",
+  "Y": "-.--", "Z": "--..",
+  "0": "-----",
+  "1": ".----", "2": "..---", "3": "...--",
+  "4": "....-", "5": ".....", "6": "-....",
+  "7": "--...", "8": "---..", "9": "----.",
+  ".": ".-.-.-", ",": "--..--", "?": "..--..",
+  "'": ".----.", "!": "-.-.--",
+  "(": "-.--.", ")": "-.--.-", "&": ".-...",
+  ":": "---...", ";": "-.-.-.", "=": "-...-",
+  "+": ".-.-.",  "_": "..--.-",
   "\"": ".-..-.", "$": "...-..-", "@": ".--.-.",
   " ": "/"
 };
@@ -37,20 +57,37 @@ function convertToMorse() {
 
 function convertToText() {
   let input = document.getElementById("input").value.trim();
-  let output = morseToText(input);
-
-  document.getElementById("output").value = output;
-
+  
+  // Check if the input contains only valid Morse code characters
+  let isValidMorse = input.split(" ").every(code => Object.values(check).includes(code));
+  
+  if (isValidMorse) {
+    let output = morseToText(input);
+    document.getElementById("output").value = output;
+  } else {
+    let output = textToMorse(input);
+    document.getElementById("output").value = output;
+  }
+  
   inputHistory.push({ input: input, output: output });
   currentIndex = inputHistory.length - 1;
   updateNavigationButtons();
   saveText();
 }
 
+  
+
+
+
+
 function textToMorse(text) {
+  
   let morse = "";
+  let isValidMorse = /^[.\-/ ]+$/.test(text);
+  if(!isValidMorse){
 
   for (let i = 0; i < text.length; i++) {
+    
     let char = text[i].toUpperCase();
     if (mapping[char]) {
       morse += mapping[char] + " ";
@@ -59,6 +96,8 @@ function textToMorse(text) {
     } else if (char === " ") {
       morse += " / ";
     }
+  }}else{
+    morse=morseToText(text);
   }
 
   return morse.trim();
@@ -101,24 +140,26 @@ function morseToText(morse) {
     function clearText() {
       const input = document.getElementById('input');
       const output = document.getElementById('output');
+      saveText();
       input.value = '';
       output.value = '';
-      saveText();
     }
+const storedInputHistory = localStorage.getItem('inputHistory');
+if (storedInputHistory) {
+  inputHistory = JSON.parse(storedInputHistory);
+  currentIndex = inputHistory.length - 1;
+  updateNavigationButtons();
+}
 
     function saveText() {
       const input = document.getElementById('input').value;
-      const output = document.getElementById('output').value;
-
-      // Store the input and output texts as needed
-      // For example, you can save them to local storage or send them to a server
-
-      // Here, I'm storing them in inputHistory
+     const output = document.getElementById('output').value;
+    
       inputHistory.push({ input: input, output: output });
       currentIndex = inputHistory.length - 1;
       updateNavigationButtons();
-
-      alert('Text saved!');
+    
+      localStorage.setItem('inputHistory', JSON.stringify(inputHistory));
     }
 
     function goBackward() {
@@ -144,6 +185,17 @@ function morseToText(morse) {
       inputElement.value = inputHistory[currentIndex].input;
       outputElement.value = inputHistory[currentIndex].output;
     }
+    document.getElementById('paste').addEventListener('click', function() {
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        navigator.clipboard.readText().then(function(text) {
+          document.getElementById('input').value = text;
+        }).catch(function(error) {
+          console.log('Failed to read clipboard content: ', error);
+        });
+      } else {
+        console.log('Clipboard API not supported');
+      }
+    });
 
     function updateNavigationButtons() {
       var backwardButton = document.getElementById("backward");
