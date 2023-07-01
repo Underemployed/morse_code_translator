@@ -1,4 +1,3 @@
-
 const mapping = {
   "A": ".-", "B": "-...", "C": "-.-.", "D": "-..",
   "E": ".", "F": "..-.", "G": "--.", "H": "....",
@@ -100,7 +99,6 @@ function morseToText(morse) {
 
 
     function clearText() {
-
       const input = document.getElementById('input');
       const output = document.getElementById('output');
       input.value = '';
@@ -120,7 +118,7 @@ function morseToText(morse) {
       currentIndex = inputHistory.length - 1;
       updateNavigationButtons();
 
-   
+      alert('Text saved!');
     }
 
     function goBackward() {
