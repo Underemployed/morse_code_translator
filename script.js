@@ -39,17 +39,12 @@ function convertToMorse() {
 
 function convertToText() {
   let input = document.getElementById("input").value.trim();
+
   
-  // Check if the input contains only valid Morse code characters
-  let isValidMorse = input.split(" ").every(code => Object.values(mapping).includes(code));
-  
-  if (isValidMorse) {
+
     let output = morseToText(input);
     document.getElementById("output").value = output;
-  } else {
-    let output = textToMorse(input);
-    document.getElementById("output").value = output;
-  }
+  
   
   inputHistory.push({ input: input, output: output });
   currentIndex = inputHistory.length - 1;
