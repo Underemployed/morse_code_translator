@@ -82,20 +82,19 @@ function morseToText(morse) {
     let code = morseArray[i];
     if (code === "") {
       text += " ";
-    } else if (Object.values(mapping).includes(code)) {
+    } else {
       let char = Object.keys(mapping).find(key => mapping[key] === code);
       if (char === "/" && i > 0 && morseArray[i - 1] === "/") {
         text += " ";
       } else {
         text += char.toLowerCase();
       }
-    } else if (code === "-") {
-      text += "_";
     }
   }
 
   return text;
 }
+
 
 
 
