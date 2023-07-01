@@ -1,56 +1,229 @@
-<!DOCTYPE html>
-<html" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!DOCTYPE html>
+  <html" lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Morse Code Converter</title>
+      <!-- CUSTOM STYLESHEET -->
+      <link rel="stylesheet" href="style.css">
+      <!-- ICONSCOUT CDN -->
+      <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+      <!-- GOOGLE FONT(MONTSERATE) -->
+      <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,800;1,700&display=swap" rel="stylesheet"> 
+  </head>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Text to Morse Code Converter</title>
-    <!-- CUSTOM STYLESHEET -->
     <link rel="stylesheet" href="style.css">
-    <!-- ICONSCOUT CDN -->
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-    <!-- GOOGLE FONT(MONTSERATE) -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,800;1,700&display=swap" rel="stylesheet"> 
-</head>
+  </head>
+
+  <body>
+    <nav>
+      <div class="new nav__container">
+        <a href ="https://github.com/Underemployed" class="nav__logo">UNDEREMPLOYED</a>
+        <ul class="nav__items">
+          <li><a href="https://github.com/Underemployed/morse_code_translator">Repo</a></li>
+          <li><a href="https://www.linkedin.com/in/nithin-a-06b946256/">LinkedIn</a></li>
+
+        </ul>
+        <button id="open__nav-btn"><i class="uil uil-bars"></i></button>
+        <button id="close__nav-btn"><i class="uil uil-multiply"></i></button>
+      </div>
+    </nav>
+    <div class="new c">
+      <h1>Text to Morse Code Converter</h1>
+      <textarea id="input" rows="5" placeholder="Write your message"></textarea>
+      <div class="p-container">
+        <p onclick="convertToMorse()">Morse Code</p>
+        <p onclick="convertToText()">Text</p>
+        <p onclick="copyText()">Copy</p>
+      </div>
+      <div class="output-container">
+        <h1>Output</h2>
+        <textarea id="output" rows="5" placeholder="Morse code will appear here" readonly></textarea>
+      </div>
+      <div class="p-container">
+        <p onclick="clearText()">Clear</p>
+    
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-</head>
+        <p onclick="goBackward()">&lt;</p>
+        <p onclick="goForward()">&gt;</p>
+      </div>
+    </div>
+  <script>
+  const mapping = {
+  "A": ".-", "B": "-...", "C": "-.-.", "D": "-..",
+  "E": ".", "F": "..-.", "G": "--.", "H": "....",
+  "I": "..", "J": ".---", "K": "-.-", "L": ".-..",
+  "M": "--", "N": "-.", "O": "---", "P": ".--.",
+  "Q": "--.-", "R": ".-.", "S": "...", "T": "-",
+  "U": "..-", "V": "...-", "W": ".--", "X": "-..-",
+  "Y": "-.--", "Z": "--..",
+  "0": "-----",
+  "1": ".----", "2": "..---", "3": "...--",
+  "4": "....-", "5": ".....", "6": "-....",
+  "7": "--...", "8": "---..", "9": "----.",
+  ".": ".-.-.-", ",": "--..--", "?": "..--..",
+  "'": ".----.", "!": "-.-.--", "/": "-..-.",
+  "(": "-.--.", ")": "-.--.-", "&": ".-...",
+  ":": "---...", ";": "-.-.-.", "=": "-...-",
+  "+": ".-.-.", "-": "-....-", "_": "..--.-",
+  "\"": ".-..-.", "$": "...-..-", "@": ".--.-.",
+  " ": "/"
+};
 
-<body>
-  <nav>
-    <div class="new nav__container">
-      <a href ="https://github.com/Underemployed" class="nav__logo">UNDEREMPLOYED</a>
-      <ul class="nav__items">
-        <li><a href="https://github.com/Underemployed/morse_code_translator">Repo</a></li>
-        <li><a href="https://www.linkedin.com/in/nithin-a-06b946256/">LinkedIn</a></li>
 
-      </ul>
-      <button id="open__nav-btn"><i class="uil uil-bars"></i></button>
-      <button id="close__nav-btn"><i class="uil uil-multiply"></i></button>
-    </div>
-  </nav>
-  <div class="new c">
-    <h1>Text to Morse Code Converter</h1>
-    <textarea id="input" rows="5" placeholder="Write your message"></textarea>
-    <div class="p-container">
-      <p onclick="convertToMorse()">Morse Code</p>
-      <p onclick="convertToText()">Text</p>
-      <p onclick="copyText()">Copy</p>
-    </div>
-    <div class="output-container">
-      <h1>Output</h2>
-      <textarea id="output" rows="5" placeholder="Morse code will appear here" readonly></textarea>
-    </div>
-    <div class="p-container">
-      <p onclick="clearText()">Clear</p>
-  
- 
-      <p onclick="goBackward()">&lt;</p>
-      <p onclick="goForward()">&gt;</p>
-    </div>
-  </div>
-<script src="script.js"></script>
-</body>
+let inputHistory = [];
+let currentIndex = -1;
 
-</html>
+function convertToMorse() {
+  let input = document.getElementById("input").value.trim();
+  let output = textToMorse(input);
+
+  document.getElementById("output").value = output;
+
+  inputHistory.push({ input: input, output: output });
+  currentIndex = inputHistory.length - 1;
+  updateNavigationButtons();
+  saveText();
+}
+
+function convertToText() {
+  let input = document.getElementById("input").value.trim();
+  let output = morseToText(input);
+
+  document.getElementById("output").value = output;
+
+  inputHistory.push({ input: input, output: output });
+  currentIndex = inputHistory.length - 1;
+  updateNavigationButtons();
+  saveText();
+}
+
+function textToMorse(text) {
+  let morse = "";
+
+  for (let i = 0; i < text.length; i++) {
+    let char = text[i].toUpperCase();
+    if (mapping[char]) {
+      morse += mapping[char] + " ";
+    } else if (char === "_") {
+      morse += "- ";
+    } else if (char === " ") {
+      morse += " / ";
+    }
+  }
+
+  return morse.trim();
+}
+
+function morseToText(morse) {
+  let text = "";
+  let morseArray = morse.split(" ");
+
+  for (let i = 0; i < morseArray.length; i++) {
+    let code = morseArray[i];
+    if (code === "") {
+      text += " ";
+    } else if (Object.values(mapping).includes(code)) {
+      let char = Object.keys(mapping).find(key => mapping[key] === code);
+      if (char === "/" && i > 0 && morseArray[i - 1] === "/") {
+        text += " ";
+      } else {
+        text += char.toLowerCase();
+      }
+    } else if (code === "-") {
+      text += "_";
+    }
+  }
+
+  return text;
+}
+
+
+
+    function copyText() {
+      const output = document.getElementById('output');
+      output.select();
+      output.setSelectionRange(0, 99999); /* For mobile devices */
+      document.execCommand('copy');
+    }
+
+
+
+    function clearText() {
+      const input = document.getElementById('input');
+      const output = document.getElementById('output');
+      input.value = '';
+      output.value = '';
+      saveText();
+    }
+
+    function saveText() {
+      const input = document.getElementById('input').value;
+      const output = document.getElementById('output').value;
+
+      // Store the input and output texts as needed
+      // For example, you can save them to local storage or send them to a server
+
+      // Here, I'm storing them in inputHistory
+      inputHistory.push({ input: input, output: output });
+      currentIndex = inputHistory.length - 1;
+      updateNavigationButtons();
+
+      alert('Text saved!');
+    }
+
+    function goBackward() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateInputOutputFields();
+        updateNavigationButtons();
+      }
+    }
+
+    function goForward() {
+      if (currentIndex < inputHistory.length - 1) {
+        currentIndex++;
+        updateInputOutputFields();
+        updateNavigationButtons();
+      }
+    }
+
+    function updateInputOutputFields() {
+      var inputElement = document.getElementById("input");
+      var outputElement = document.getElementById("output");
+
+      inputElement.value = inputHistory[currentIndex].input;
+      outputElement.value = inputHistory[currentIndex].output;
+    }
+
+    function updateNavigationButtons() {
+      var backwardButton = document.getElementById("backward");
+      var forwardButton = document.getElementById("forward");
+
+      backwardButton.disabled = currentIndex === 0;
+      forwardButton.disabled = currentIndex === inputHistory.length - 1;
+    }
+    const navItem =document.querySelector(".nav__items");
+  const openNavBtn =document.querySelector("#open__nav-btn");
+  const closeNavBtn =document.querySelector("#close__nav-btn");
+
+  const openNav =()=>{
+    navItem.style.display="flex";
+    openNavBtn.style.display="none";
+    closeNavBtn.style.display="inline-block";
+  }
+  const closeNav=()=>{
+    navItem.style.display="none";
+    openNavBtn.style.display="inline-block";
+    closeNavBtn.style.display="none";  
+    
+  }
+  openNavBtn.addEventListener("click", openNav)
+  closeNavBtn.addEventListener("click", closeNav)
+
+  </script>
+  </body>
+
+  </html>
