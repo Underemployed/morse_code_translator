@@ -19,26 +19,7 @@ const mapping = {
   " ": "/"
 };
 
-const check = {
-  "A": ".-", "B": "-...", "C": "-.-.", "D": "-..",
-  "E": ".", "F": "..-.", "G": "--.", "H": "....",
-  "I": "..", "J": ".---", "K": "-.-", "L": ".-..",
-  "M": "--", "N": "-.", "O": "---", "P": ".--.",
-  "Q": "--.-", "R": ".-.", "S": "...", "T": "-",
-  "U": "..-", "V": "...-", "W": ".--", "X": "-..-",
-  "Y": "-.--", "Z": "--..",
-  "0": "-----",
-  "1": ".----", "2": "..---", "3": "...--",
-  "4": "....-", "5": ".....", "6": "-....",
-  "7": "--...", "8": "---..", "9": "----.",
-  ".": ".-.-.-", ",": "--..--", "?": "..--..",
-  "'": ".----.", "!": "-.-.--",
-  "(": "-.--.", ")": "-.--.-", "&": ".-...",
-  ":": "---...", ";": "-.-.-.", "=": "-...-",
-  "+": ".-.-.",  "_": "..--.-",
-  "\"": ".-..-.", "$": "...-..-", "@": ".--.-.",
-  " ": "/"
-};
+
 
 
 let inputHistory = [];
@@ -60,7 +41,7 @@ function convertToText() {
   let input = document.getElementById("input").value.trim();
   
   // Check if the input contains only valid Morse code characters
-  let isValidMorse = input.split(" ").every(code => Object.values(check).includes(code));
+  let isValidMorse = input.split(" ").every(code => Object.values(mapping).includes(code));
   
   if (isValidMorse) {
     let output = morseToText(input);
@@ -137,7 +118,7 @@ function morseToText(morse) {
       const output = document.getElementById('output');
       saveText();
       input.value = '';
-      output.value = '';
+      output.value = '   ';
     }
 const storedInputHistory = localStorage.getItem('inputHistory');
 if (storedInputHistory) {
