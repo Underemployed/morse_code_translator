@@ -174,6 +174,41 @@ if (storedInputHistory) {
       backwardButton.disabled = currentIndex === 0;
       forwardButton.disabled = currentIndex === inputHistory.length - 1;
     }
+        /*play audio*/
+        function playMorseCode() {
+          const morseCodeInput = document.getElementById("input").value.trim();
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const dotDuration = 100; // Duration of a dot in milliseconds
+          const gainNode = audioContext.createGain();
+          gainNode.connect(audioContext.destination);
+    
+          let time = audioContext.currentTime;
+    
+          for (let i = 0; i < morseCodeInput.length; i++) {
+              const char = morseCodeInput[i].toUpperCase();
+              if (char === ".") {
+                  playTone(250, dotDuration);
+                  time += dotDuration / 1000;
+              } else if (char === "-") {
+                  playTone(250, dotDuration * 3);
+                  time += (dotDuration * 3) / 1000;
+              } else if (char === " ") {
+                  // Pause between words
+                  time += dotDuration * 4 / 1000;
+              }
+              // Pause between characters
+              time += dotDuration / 1000;
+          }
+    
+          function playTone(frequency, duration) {
+              const oscillator = audioContext.createOscillator();
+              oscillator.type = "sine";
+              oscillator.frequency.setValueAtTime(frequency, time);
+              oscillator.connect(gainNode);
+              oscillator.start(time);
+              oscillator.stop(time + (duration / 1000));
+          }
+      }
     const navItem =document.querySelector(".nav__items");
   const openNavBtn =document.querySelector("#open__nav-btn");
   const closeNavBtn =document.querySelector("#close__nav-btn");
